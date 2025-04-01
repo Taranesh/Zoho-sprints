@@ -13,7 +13,7 @@ import io
 import base64
 
 # MongoDB connection
-client = pymongo.MongoClient("mongodb+srv://smaas:scmxpert123SCM@scmxpert.5h1vx.mongodb.net/SCM?retryWrites=true&w=majority")
+client = pymongo.MongoClient("mongodb+srv://m001-student:taranesh@sandbox.4bigd.mongodb.net/?retryWrites=true&w=majority")
 db = client["productivity_dashboard"]
 updates_collection = db["task_notes"]
 images_collection = db["insight_images"]
