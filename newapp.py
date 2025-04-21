@@ -17,6 +17,7 @@ client = pymongo.MongoClient("mongodb+srv://m001-student:taranesh@sandbox.4bigd.
 db = client["productivity_dashboard"]
 updates_collection = db["task_notes"]
 images_collection = db["insight_images"]
+recordings_collection = db["productivity_recordings"]
 # Get device IP address
 def get_device_ip():
     try:
@@ -204,3 +205,125 @@ elif menu == "🔍 Insights":
                         images_collection.delete_one({"image_id": img["image_id"]})
                         st.success("Image deleted successfully!")
                         st.rerun()
+
+# Productivity Recordings Page
+
+elif menu == "💡 Productivity Tips":
+
+    st.title("🎧 Productivity Recordings")
+
+    st.header("🔒 Secure Recording (Admin Only)")
+
+    password_recordings = st.text_input("Enter Admin Password", type="password", key="recordings_password")
+
+
+
+    if password_recordings == CONSTANT_PASSWORD:
+
+        st.subheader("🎤 Record and Upload")
+
+        recorded_audio = st.audio_input("Record your voice")
+
+
+
+        if recorded_audio is not None:
+
+            if st.button("Save Recording"):
+
+                recording_id = str(uuid.uuid4())
+
+                sender_ip = get_device_ip()
+
+                audio_bytes = recorded_audio.getvalue()
+
+                recordings_collection.insert_one({
+
+                    "recording_id": recording_id,
+
+                    "recording_data": audio_bytes,
+
+                    "filename": f"recorded_{datetime.now().strftime('%Y%m%d_%H%M%S')}.wav",  # Default format is WAV
+
+                    "timestamp": datetime.now(),
+
+                    "sender_ip": sender_ip
+
+                })
+
+                st.success("Recording saved successfully!")
+
+                st.rerun()
+
+
+
+        st.subheader("⬆️ Upload Existing Recording")
+
+        uploaded_recording = st.file_uploader("Or upload a recording (e.g., .mp3, .wav)", type=["mp3", "wav"])
+
+
+
+        if uploaded_recording is not None:
+
+            if st.button("Upload File"):
+
+                recording_id = str(uuid.uuid4())
+
+                sender_ip = get_device_ip()
+
+                recordings_collection.insert_one({
+
+                    "recording_id": recording_id,
+
+                    "recording_data": uploaded_recording.read(),
+
+                    "filename": uploaded_recording.name,
+
+                    "timestamp": datetime.now(),
+
+                    "sender_ip": sender_ip
+
+                })
+
+                st.success(f"Recording '{uploaded_recording.name}' uploaded successfully!")
+
+                st.rerun()
+
+
+
+        st.subheader("🎧 View and Manage Recordings")
+
+        recordings = list(recordings_collection.find())
+
+        if not recordings:
+
+            st.warning("No recordings available.")
+
+        else:
+
+            for recording in recordings:
+
+                col1, col2, col3 = st.columns([3, 2, 1])
+
+                with col1:
+
+                    st.markdown(f"**Filename:** {recording['filename']}")
+
+                    st.audio(recording['recording_data'], format='audio/*')
+
+                with col2:
+
+                    st.write(f"Uploaded on: {recording['timestamp'].strftime('%Y-%m-%d %H:%M:%S')}")
+
+                with col3:
+
+                    if st.button("🗑️ Delete", key=recording["recording_id"]):
+
+                        recordings_collection.delete_one({"recording_id": recording["recording_id"]})
+
+                        st.success(f"Recording '{recording['filename']}' deleted.")
+
+                        st.rerun()
+
+    else:
+
+        st.warning("🔒 Password required to access recordings.")
