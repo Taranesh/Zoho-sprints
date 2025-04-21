@@ -39,7 +39,7 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 # Sidebar Menu
 st.sidebar.title("Navigation")
-menu = st.sidebar.radio("Go to", ["📊 Zoho Productivity Stats", "📝 Task Manager", "📅 Calendar", "🔍 Insights", "💡 Productivity Tips"])
+menu = st.sidebar.radio("Go to", ["📊 Zoho Productivity Stats", "📝 Task Manager", "📅 User Management", "🔍 Insights", "💡 Productivity Feedback Tips"])
 
 # Random Productivity Score
 st.sidebar.metric(label="🔥 Daily Focus Score", value=f"{random.randint(50, 100)}%")
@@ -208,11 +208,11 @@ elif menu == "🔍 Insights":
 
 # Productivity Recordings Page
 
-elif menu == "💡 Productivity Tips":
+elif menu == "💡 Productivity Feedback Tips":
 
-    st.title("🎧 Productivity Recordings")
+    # st.title("Productivity Recordings")
 
-    st.header("🔒 Secure Recording (Admin Only)")
+    st.header("Evaluation of Product Managements")
 
     password_recordings = st.text_input("Enter Admin Password", type="password", key="recordings_password")
 
@@ -220,9 +220,9 @@ elif menu == "💡 Productivity Tips":
 
     if password_recordings == CONSTANT_PASSWORD:
 
-        st.subheader("🎤 Record and Upload")
+        st.subheader("Enroll Your Feedback")
 
-        recorded_audio = st.audio_input("Record your voice")
+        recorded_audio = st.audio_input("Give your voice Message Feedback")
 
 
 
@@ -256,7 +256,7 @@ elif menu == "💡 Productivity Tips":
 
 
 
-        st.subheader("⬆️ Upload Existing Recording")
+        st.subheader("Upload Existing Feedback Documents")
 
         uploaded_recording = st.file_uploader("Or upload a recording (e.g., .mp3, .wav)", type=["mp3", "wav"])
 
@@ -290,7 +290,7 @@ elif menu == "💡 Productivity Tips":
 
 
 
-        st.subheader("🎧 View and Manage Recordings")
+        st.subheader("Validate and Manage Feedbacks")
 
         recordings = list(recordings_collection.find())
 
